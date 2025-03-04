@@ -1,0 +1,57 @@
+- name: Install Docker and Deploy Jenkins
+  hosts: aws_servers
+  become: yes
+  tasks:
+    - name: Install required packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: "deb https://download.docker.com/linux/ubuntu focal stable"
+        state: present
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+
+    - name: Ensure Docker service is running
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add user to Docker group (optional, replace 'ubuntu' with your user)
+      user:
+        name: ubuntu
+        groups: docker
+        append: yes
+
+    - name: Pull Jenkins Docker image
+      docker_image:
+        name: jenkins/jenkins:lts
+        source: pull
+
+    - name: Run Jenkins container
+      docker_container:
+        user: root
+        name: jenkins
+        image: jenkins/jenkins:lts
+        state: started
+        restart_policy: always
+        published_ports:
+          - "8080:8080"
+          - "50000:50000"
+        volumes:
+          - "/var/jenkins_home:/var/jenkins_home"

@@ -20,3 +20,6 @@ ansible-devops/
 │── README.md               # Documentation
 
 ```
+
+## deploy the configuration
+`ansible-playbook playbooks/setup-docker-jenkins.yml`
