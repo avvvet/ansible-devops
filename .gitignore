@@ -1,0 +1,15 @@
+# Ignore Ansible inventory files with sensitive data
+inventory/*.ini
+inventory/*.yml
+
+# Ignore Ansible cache and logs
+*.retry
+*.log
+
+# Ignore temporary files and system files
+*.swp
+*.swo
+.DS_Store
+
+# Ignore SSH private keys if any 
+*.pem
